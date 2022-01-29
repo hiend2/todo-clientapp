@@ -21,6 +21,11 @@ class ToDoService {
         let url = `lists/${listId}/tasks/${id}`;
         return wrappedFetch(url, 'PATCH', JSON.stringify({completed:true}));
     }
+
+    save(id, listId, newTodo) {
+        let url = `lists/${listId}/tasks/${id}`;
+        return wrappedFetch(url, 'PATCH', JSON.stringify(newTodo));
+    }
 }
 
 const toDoService = new ToDoService();

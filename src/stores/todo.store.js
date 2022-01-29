@@ -63,12 +63,13 @@ export default class ToDoStore {
     @action
     toDoDone(id) {
         this.rootStore.setBusy();
-        toDoService.toDoDone(id, CurrentList).then(res => {
-            const index = this.findToDo(res.id);
-            this.toDoList[index].completed = true;
+        const index = this.findToDo(id);
+        this.toDoList[index].completed = true;
+        toDoService.save(id, CurrentList, this.toDoList[index]).then(() => {
             this.rootStore.resetBusy();
         })
         .catch(() => {
+            this.toDoList[index].completed = false;
             this.rootStore.resetBusy();
         });
     }
@@ -89,11 +90,24 @@ export default class ToDoStore {
     }
 
     @action
+    save(id, newTodo) {
+        this.rootStore.setBusy();
+        toDoService.save(id, CurrentList, newTodo).then(() => {
+            this.rootStore.resetBusy();
+        })
+        .catch(() => {
+            this.rootStore.resetBusy();
+        });
+    }
+
+    @action
     upPos(id) {
         const index = this.findToDo(id);
         const temp = this.toDoList[index].position;
         this.toDoList[index].position = this.toDoList[index-1].position; 
         this.toDoList[index-1].position = temp;
+        this.save(id, this.toDoList[index]);
+        this.save(this.toDoList[index-1].id, this.toDoList[index-1]);
     }
 
     @action
@@ -102,5 +116,7 @@ export default class ToDoStore {
         const temp = this.toDoList[index].position;
         this.toDoList[index].position = this.toDoList[index+1].position; 
         this.toDoList[index+1].position = temp;
+        this.save(id, this.toDoList[index]);
+        this.save(this.toDoList[index+1].id, this.toDoList[index+1]);
     }
 }
