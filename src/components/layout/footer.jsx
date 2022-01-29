@@ -22,7 +22,7 @@ class Footer extends React.Component {
         const { classes } = this.props;
         return (
             <div className={classes.container}>
-                <Typography>© Hien Doan - 2021</Typography>
+                <Typography>© Hien Doan - 2022</Typography>
             </div>
         );
     }
